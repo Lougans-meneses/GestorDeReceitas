@@ -31,36 +31,28 @@ public class ReceitaService {
     }
 
     public ReceitaResponseDTO criarReceita(ReceitaRequestDTO dto) {
-        // Busca categoria
         Categoria categoria = categoriaRepository.findById(dto.getCategoriaId())
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada: " + dto.getCategoriaId()));
 
-        // Busca todos os ingredientes do banco
         List<Ingrediente> ingredientesDisponiveis = ingredienteRepository.findAll();
 
-        // Converte DTO em entidade
         Receita receita = ReceitaMapper.toEntity(dto, categoria, ingredientesDisponiveis);
 
-        // Salva no banco
         Receita receitaSalva = receitaRepository.save(receita);
 
-        // Retorna DTO de resposta
         return ReceitaMapper.toDTO(receitaSalva);
     }
 
-    // Listar todas as receitas
     public List<ReceitaResponseDTO> listarTodas() {
         return ReceitaMapper.toDTOList(receitaRepository.findAll());
     }
 
-    // Buscar por ID
     public ReceitaResponseDTO buscarPorId(Long id) {
         Receita receita = receitaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Receita com ID " + id + " não encontrada"));
         return ReceitaMapper.toDTO(receita);
     }
 
-    // Criar receita
     public ReceitaResponseDTO salvar(ReceitaRequestDTO dto) {
         Categoria categoria = categoriaRepository.findById(dto.getCategoriaId())
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria com ID " + dto.getCategoriaId() + " não encontrada"));
@@ -75,7 +67,6 @@ public class ReceitaService {
         return ReceitaMapper.toDTO(receitaSalva);
     }
 
-    // Atualizar receita (PUT)
     public ReceitaResponseDTO atualizar(Long id, ReceitaRequestDTO dto) {
         Receita receitaExistente = receitaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Receita com ID " + id + " não encontrada"));
@@ -91,7 +82,6 @@ public class ReceitaService {
         return ReceitaMapper.toDTO(receitaSalva);
     }
 
-    // Atualizar parcialmente (PATCH)
     public ReceitaResponseDTO atualizarParcial(Long id, ReceitaRequestDTO dto) {
         Receita receita = receitaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Receita com ID " + id + " não encontrada"));
@@ -118,7 +108,6 @@ public class ReceitaService {
         return ReceitaMapper.toDTO(receitaSalva);
     }
 
-    // Deletar receita
     public void deletar(Long id) {
         if (!receitaRepository.existsById(id)) {
             throw new ResourceNotFoundException("Receita com ID " + id + " não encontrada para exclusão");
